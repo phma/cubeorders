@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Quadlods REQUIRED)
 find_package(GMPXX REQUIRED)
 
-add_executable(cubeorders cubeorders.cpp)
+add_executable(cubeorders cubeorders.cpp order.cpp)
 target_link_libraries(cubeorders ${GMP_LIBRARY} ${GMPXX_LIBRARIES} ${Quadlods_LIBRARY})
 
 set(CUBEORDERS_MAJOR_VERSION 0)
