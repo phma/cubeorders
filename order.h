@@ -6,6 +6,7 @@
 
 #include <quadlods.h>
 #include <vector>
+#include <string>
 
 class Order
 {
@@ -14,4 +15,4 @@ public:
 };
 
 void init(int n);
-Order gen();
+std::string gen();

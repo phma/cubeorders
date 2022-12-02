@@ -20,13 +20,15 @@ void init(int n)
   twon=(uint64_t)1<<n;
 }
 
-Order gen()
+string gen()
 {
-  uint64_t i,j,k;
+  uint64_t i,j,k,count=0;
+  int64_t diff,lastdiff=1;
   vector<mpq_class> elem,sums;
   map<mpq_class,uint64_t> sorted;
   map<mpq_class,uint64_t>::iterator it;
-  Order ret;
+  vector<uint32_t> seq;
+  string ret;
   elem=quad.gen();
   sort(elem.begin(),elem.end());
   sums.push_back(0);
@@ -41,6 +43,20 @@ Order gen()
   for (i=0;i<twon;i++)
     sorted[sums[i]]=i;
   for (it=sorted.begin();it!=sorted.end();++it)
-    ret.seq.push_back(it->second);
+    seq.push_back(it->second);
+  for (i=1;i<seq.size()/2;i++)
+  {
+    diff=(int64_t)seq[i]-seq[i-1];
+    if (diff==lastdiff)
+      count++;
+    else
+    {
+      if (count)
+	ret+=to_string(lastdiff)+"("+to_string(count)+")";
+      count=1;
+      lastdiff=diff;
+    }
+  }
+  ret+=to_string(diff)+"("+to_string(count)+")";
   return ret;
 }
