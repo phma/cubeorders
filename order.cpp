@@ -57,6 +57,7 @@ string gen()
       lastdiff=diff;
     }
   }
-  ret+=to_string(diff)+"("+to_string(count)+")";
+  if (count)
+    ret+=to_string(diff)+"("+to_string(count)+")";
   return ret;
 }
