@@ -7,9 +7,11 @@
 #include <iostream>
 #include <cmath>
 #include <quadlods.h>
+#include <boost/program_options.hpp>
 #include "order.h"
 #define MINCOUNT 10
 using namespace std;
+namespace po=boost::program_options;
 
 bool ready(map<string,uint64_t> &histo)
 {
@@ -29,7 +31,27 @@ int main(int argc, char *argv[])
   map<string,uint64_t> histo;
   uint64_t minbar=0,maxbar=0;
   mpz_class totalOrders;
-  int j,n=5;
+  bool validArgs,validCmd=true;
+  int j,n=0;
+  po::options_description generic("Options");
+  po::options_description hidden("Hidden options");
+  po::options_description cmdline_options;
+  po::positional_options_description p;
+  po::variables_map vm;
+  hidden.add_options()
+    ("dimensions",po::value<int>(&n),"Dimensions");
+  p.add("dimensions",1);
+  cmdline_options.add(generic).add(hidden);
+  try
+  {
+    po::store(po::command_line_parser(argc,argv).options(cmdline_options).positional(p).run(),vm);
+    po::notify(vm);
+  }
+  catch (exception &e)
+  {
+    cerr<<e.what()<<endl;
+    validCmd=false;
+  }
   init(n);
   while (count)
   {
