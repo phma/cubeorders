@@ -23,15 +23,19 @@ bool ready(map<string,uint64_t> &histo)
 
 int main(int argc, char *argv[])
 {
-  int i,j;
+  map<string,uint64_t>::iterator i;
   uint64_t count=MINCOUNT;
-  string order;
+  string order,minorder,maxorder;
   map<string,uint64_t> histo;
-  init(5);
+  uint64_t minbar=0,maxbar=0;
+  mpz_class totalOrders;
+  int j,n=5;
+  init(n);
   while (count)
   {
     order=gen();
     histo[order]++;
+    minbar++;
     if (histo[order]>MINCOUNT)
     {
       count--;
@@ -41,6 +45,28 @@ int main(int argc, char *argv[])
     else
       count=histo.size();
   }
-  cout<<histo.size()<<endl;
+  for (i=histo.begin();i!=histo.end();++i)
+  {
+    count+=i->second;
+    if (i->second<minbar)
+    {
+      minbar=i->second;
+      minorder=i->first;
+    }
+    if (i->second>maxbar)
+    {
+      maxbar=i->second;
+      maxorder=i->first;
+    }
+  }
+  cout<<count<<" total trials\n";
+  cout<<"Histogram bars range:\n";
+  cout<<minbar<<' '<<minorder<<endl;
+  cout<<maxbar<<' '<<maxorder<<endl;
+  cout<<histo.size()<<" orders, not counting signs and permutations\n";
+  totalOrders=histo.size();
+  for (j=1;j<=n;j++)
+    totalOrders*=2*j;
+  cout<<totalOrders<<" orders, counting signs and permutations\n";
   return 0;
 }
