@@ -41,7 +41,7 @@ string gen()
       sums.push_back(elem[k++]);
   }
   for (i=0;i<twon;i++)
-    sorted[sums[i]]=i;
+    sorted[sums[i]]=i; // Most time is spent here.
   for (it=sorted.begin();it!=sorted.end();++it)
     seq.push_back(it->second);
   for (i=1;i<seq.size()/2;i++)
