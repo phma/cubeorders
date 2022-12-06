@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
   string order,minorder,maxorder;
   map<string,uint64_t> histo;
   uint64_t minbar=0,maxbar=0;
+  time_t now,then;
   mpz_class totalOrders;
   bool validArgs,validCmd=true;
   int j,n=0;
@@ -66,6 +67,13 @@ int main(int argc, char *argv[])
     }
     else
       count=histo.size();
+    now=time(nullptr);
+    if (now!=then)
+    {
+      cout<<histo.size()<<' '<<count<<"  \r";
+      cout.flush();
+      then=now;
+    }
   }
   for (i=histo.begin();i!=histo.end();++i)
   {
