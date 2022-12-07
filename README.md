@@ -5,7 +5,7 @@ corners. It computes the correct number up to five dimensions. In six dimensions
 it takes a very long time (at least a day on my box, compared to six seconds in
 five dimensions).
 
-#Compiling
+# Compiling
 First install Quadlods, which Cubeorders uses to generate n-tuples, where n is the
 number of dimensions. You will need GMP and Boost for both Quadlods and Cubeorders.
 
