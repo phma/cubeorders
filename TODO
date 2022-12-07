@@ -1,6 +1,6 @@
 Before 0.1.0 (first public release):
-•Show a progress indicator.
-•Show the orders that occur most and least frequently.
+•Show a progress indicator. ✓
+•Show the orders that occur most and least frequently. ✓
 
 Before 0.2.0:
 •Speed up execution with threads.
