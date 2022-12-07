@@ -63,56 +63,65 @@ int main(int argc, char *argv[])
   {
     po::store(po::command_line_parser(argc,argv).options(cmdline_options).positional(p).run(),vm);
     po::notify(vm);
+    validArgs=vm.count("dimensions")>0 && n>=0;
   }
   catch (exception &e)
   {
     cerr<<e.what()<<endl;
     validCmd=false;
   }
-  init(n);
-  while (count)
+  if (validArgs && validCmd)
   {
-    order=gen();
-    histo[order]++;
-    minbar++;
-    if (histo[order]>MINCOUNT)
+    init(n);
+    while (count)
     {
-      count--;
-      if (count==0 && !ready(histo))
+      order=gen();
+      histo[order]++;
+      minbar++;
+      if (histo[order]>MINCOUNT)
+      {
+	count--;
+	if (count==0 && !ready(histo))
+	  count=histo.size();
+      }
+      else
 	count=histo.size();
+      now=time(nullptr);
+      if (now!=then)
+      {
+	cout<<histo.size()<<' '<<count<<"  \r";
+	cout.flush();
+	then=now;
+      }
     }
-    else
-      count=histo.size();
-    now=time(nullptr);
-    if (now!=then)
+    for (i=histo.begin();i!=histo.end();++i)
     {
-      cout<<histo.size()<<' '<<count<<"  \r";
-      cout.flush();
-      then=now;
+      count+=i->second;
+      if (i->second<minbar)
+      {
+	minbar=i->second;
+	minorder=i->first;
+      }
+      if (i->second>maxbar)
+      {
+	maxbar=i->second;
+	maxorder=i->first;
+      }
     }
+    cout<<count<<" total trials\n";
+    cout<<"Histogram bars range:\n";
+    cout<<minbar<<' '<<minorder<<endl;
+    cout<<maxbar<<' '<<maxorder<<endl;
+    cout<<histo.size()<<" orders, not counting signs and permutations\n";
+    totalOrders=histo.size();
+    for (j=1;j<=n;j++)
+      totalOrders*=2*j;
+    cout<<totalOrders<<" orders, counting signs and permutations\n";
   }
-  for (i=histo.begin();i!=histo.end();++i)
+  else
   {
-    count+=i->second;
-    if (i->second<minbar)
-    {
-      minbar=i->second;
-      minorder=i->first;
-    }
-    if (i->second>maxbar)
-    {
-      maxbar=i->second;
-      maxorder=i->first;
-    }
+    cerr<<"Usage: cubeorders n\n";
+    cerr<<"where n (number of dimensions) is a nonnegative integer.\n";
   }
-  cout<<count<<" total trials\n";
-  cout<<"Histogram bars range:\n";
-  cout<<minbar<<' '<<minorder<<endl;
-  cout<<maxbar<<' '<<maxorder<<endl;
-  cout<<histo.size()<<" orders, not counting signs and permutations\n";
-  totalOrders=histo.size();
-  for (j=1;j<=n;j++)
-    totalOrders*=2*j;
-  cout<<totalOrders<<" orders, counting signs and permutations\n";
   return 0;
 }
