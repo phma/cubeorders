@@ -24,6 +24,7 @@
 #include <cmath>
 #include <quadlods.h>
 #include <boost/program_options.hpp>
+#include "config.h"
 #include "order.h"
 #define MINCOUNT 10
 using namespace std;
@@ -73,6 +74,9 @@ int main(int argc, char *argv[])
   if (validArgs && validCmd)
   {
     init(n);
+    cout<<"Cubeorders version "<<VERSION<<" © "<<COPY_YEAR<<" Pierre Abbat\n"<<
+      "Distributed under GPL v3 or later.\n"<<
+      "This is free software with no warranty.\n";
     while (count)
     {
       order=gen();
