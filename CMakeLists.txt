@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.1.0)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #set(CMAKE_AUTOMOC ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -11,13 +11,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Quadlods REQUIRED)
 find_package(GMPXX REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
+find_package(Threads)
 
-add_executable(cubeorders cubeorders.cpp order.cpp)
-target_link_libraries(cubeorders ${GMP_LIBRARY} ${GMPXX_LIBRARIES} ${Quadlods_LIBRARY} ${Boost_LIBRARIES})
+add_executable(cubeorders cubeorders.cpp order.cpp threads.cpp random.cpp)
+target_link_libraries(cubeorders ${CMAKE_THREAD_LIBS_INIT} ${GMP_LIBRARY} ${GMPXX_LIBRARIES} ${Quadlods_LIBRARY} ${Boost_LIBRARIES})
 
 set(CUBEORDERS_MAJOR_VERSION 0)
 set(CUBEORDERS_MINOR_VERSION 1)
-set(CUBEORDERS_PATCH_VERSION 0)
+set(CUBEORDERS_PATCH_VERSION 1)
 set(CUBEORDERS_VERSION ${CUBEORDERS_MAJOR_VERSION}.${CUBEORDERS_MINOR_VERSION}.${CUBEORDERS_PATCH_VERSION})
 set(COPY_YEAR 2022)
 
