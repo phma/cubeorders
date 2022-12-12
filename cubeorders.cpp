@@ -26,6 +26,7 @@
 #include <boost/program_options.hpp>
 #include "config.h"
 #include "order.h"
+#include "threads.h"
 #define MINCOUNT 10
 using namespace std;
 namespace po=boost::program_options;
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
   mpz_class totalOrders;
   bool validArgs,validCmd=true;
   int j,n=0;
+  int nthreads;
   po::options_description generic("Options");
   po::options_description hidden("Hidden options");
   po::options_description cmdline_options;
@@ -77,6 +79,8 @@ int main(int argc, char *argv[])
     cout<<"Cubeorders version "<<VERSION<<" © "<<COPY_YEAR<<" Pierre Abbat\n"<<
       "Distributed under GPL v3 or later.\n"<<
       "This is free software with no warranty.\n";
+    nthreads=thread::hardware_concurrency();
+    startThreads(nthreads);
     while (count)
     {
       order=gen();
@@ -98,6 +102,7 @@ int main(int argc, char *argv[])
 	then=now;
       }
     }
+    setThreadCommand(TH_STOP);
     for (i=histo.begin();i!=histo.end();++i)
     {
       count+=i->second;
@@ -121,6 +126,8 @@ int main(int argc, char *argv[])
     for (j=1;j<=n;j++)
       totalOrders*=2*j;
     cout<<totalOrders<<" orders, counting signs and permutations\n";
+    waitForThreads(TH_STOP);
+    joinThreads();
   }
   else
   {

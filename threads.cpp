@@ -32,8 +32,6 @@
 using namespace std;
 namespace cr=std::chrono;
 
-#define CHUNKSIZE 137
-
 mutex actMutex;
 mutex startMutex;
 mutex anyThreadMutex;
@@ -72,7 +70,7 @@ double busyFraction()
 void startThreads(int n)
 {
   int i,m;
-  threadCommand=TH_WAIT;
+  threadCommand=TH_RUN;
   sleepTime.resize(n);
   m=n*3;
   threadNums[this_thread::get_id()]=-1;
@@ -293,58 +291,22 @@ void OrderThread::operator()(int thread)
   startMutex.unlock();
   while (threadCommand!=TH_STOP)
   {
-    if (threadCommand==TH_READ)
-    { // The threads are reading the input files.
-      threadStatusMutex.lock();
-      threadStatus[thread]=TH_READ;
-      threadStatusMutex.unlock();
-      act=dequeueAction();
-      switch (act.opcode)
-      {
-      }
-    }
-    if (threadCommand==TH_PAUSE)
-    { // The job is ongoing, but has to pause to write out the files.
-      threadStatusMutex.lock();
-      threadStatus[thread]=TH_PAUSE;
-      threadStatusMutex.unlock();
-      act=dequeueAction();
-      switch (act.opcode)
-      {
-      }
-    }
-    if (threadCommand==TH_SCAN)
-    { // Scan the tiles to find the point density of the bottom.
-      threadStatusMutex.lock();
-      threadStatus[thread]=TH_SCAN;
-      threadStatusMutex.unlock();
-    }
-    if (threadCommand==TH_POSTSCAN)
-    { // After scanning, set the paraboloid size for forests and roofs.
-      threadStatusMutex.lock();
-      threadStatus[thread]=TH_POSTSCAN;
-      threadStatusMutex.unlock();
-    }
-    if (threadCommand==TH_SPLIT)
+    if (threadCommand==TH_RUN)
     {
       threadStatusMutex.lock();
-      threadStatus[thread]=TH_SPLIT;
+      threadStatus[thread]=TH_RUN;
       threadStatusMutex.unlock();
-    }
-    if (threadCommand==TH_WAIT)
-    { // There is no job. The threads are waiting for a job.
-      threadStatusMutex.lock();
-      threadStatus[thread]=TH_WAIT;
-      threadStatusMutex.unlock();
-      if (thread)
-	act.opcode=0;
+      act=dequeueAction();
+      if (act.opcode)
+      {
+	unsleep(thread);
+      }
       else
-	act=dequeueAction();
+	sleep(thread);
     }
   }
   //octStore.flush(thread,threads.size());
   threadStatusMutex.lock();
   threadStatus[thread]=TH_STOP;
-  //cout<<"Thread "<<thread<<" processed "<<nPoints<<" points\n";
   threadStatusMutex.unlock();
 }
