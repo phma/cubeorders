@@ -299,13 +299,14 @@ void OrderThread::operator()(int thread)
       act=dequeueAction();
       if (act.opcode)
       {
+	act.order=makeOrder(act.tuple);
+	enqueueResult(act);
 	unsleep(thread);
       }
       else
 	sleep(thread);
     }
   }
-  //octStore.flush(thread,threads.size());
   threadStatusMutex.lock();
   threadStatus[thread]=TH_STOP;
   threadStatusMutex.unlock();

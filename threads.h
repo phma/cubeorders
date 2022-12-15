@@ -37,6 +37,7 @@
 #include <vector>
 #include <array>
 #include <map>
+#include "order.h"
 
 // These are used as both commands to the threads and status from the threads.
 #define TH_RUN 1
@@ -49,12 +50,8 @@
 struct ThreadAction
 {
   int opcode;
-  int param0;
-  double param1;
-  double param2;
-  std::string filename;
-  int flags;
-  int result;
+  std::vector<mpq_class> tuple;
+  std::string order;
 };
 
 extern int currentAction;
