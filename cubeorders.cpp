@@ -107,6 +107,8 @@ int main(int argc, char *argv[])
 	else
 	  count=histo.size();
       }
+      else
+	this_thread::sleep_for(chrono::milliseconds(1));
       now=time(nullptr);
       if (now!=then)
       {
