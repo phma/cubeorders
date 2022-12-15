@@ -44,8 +44,6 @@ atomic<int> threadCommand;
 vector<thread> threads;
 vector<int> threadStatus; // Bit 8 indicates whether the thread is sleeping.
 vector<double> sleepTime;
-double stageTolerance;
-double minArea;
 queue<ThreadAction> actQueue,resQueue;
 int currentAction;
 map<thread::id,int> threadNums;
@@ -115,6 +113,11 @@ void enqueueAction(ThreadAction a)
 bool actionQueueEmpty()
 {
   return actQueue.size()==0;
+}
+
+bool actionQueueFull()
+{
+  return actQueue.size()>=threadStatus.size();
 }
 
 ThreadAction dequeueResult()
@@ -221,11 +224,6 @@ int getThreadStatus()
   }
   threadStatusMutex.unlock_shared();
   return (threadCommand<<20)|((minStatus^maxStatus)<<10)|(minStatus&0x3ff);
-}
-
-void setMinArea(double area)
-{
-  minArea=area;
 }
 
 void waitForThreads(int newStatus)

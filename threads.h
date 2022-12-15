@@ -63,6 +63,7 @@ void joinThreads();
 void enqueueAction(ThreadAction a);
 ThreadAction dequeueResult();
 bool actionQueueEmpty();
+bool actionQueueFull();
 bool resultQueueEmpty();
 void sleepDead(int thread);
 void setThreadCommand(int newStatus);
