@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
   map<string,uint64_t> histo;
   uint64_t minbar=0,maxbar=0;
   time_t now,then;
+  ThreadAction ta;
   mpz_class totalOrders;
   bool validArgs,validCmd=true;
   int j,n=0;
@@ -81,19 +82,31 @@ int main(int argc, char *argv[])
       "This is free software with no warranty.\n";
     nthreads=thread::hardware_concurrency();
     startThreads(nthreads);
-    while (count)
+    while (count || busyFraction() || !resultQueueEmpty())
     {
-      order=makeOrder(gen());
-      histo[order]++;
-      minbar++;
-      if (histo[order]>MINCOUNT)
+      if (count && !actionQueueFull())
       {
-	count--;
-	if (count==0 && !ready(histo))
+	ta.opcode=ACT_SUBSUM;
+	ta.tuple=gen();
+	enqueueAction(ta);
+      }
+      if (!count)
+	waitForQueueEmpty();
+      ta=dequeueResult();
+      if (ta.opcode)
+      {
+	histo[ta.order]++;
+	minbar++;
+	if (histo[ta.order]>MINCOUNT)
+	{
+	  if (count)
+	    count--;
+	  if (count==0 && !ready(histo))
+	    count=histo.size();
+	}
+	else
 	  count=histo.size();
       }
-      else
-	count=histo.size();
       now=time(nullptr);
       if (now!=then)
       {
