@@ -20,7 +20,6 @@
  * along with Cubeorders. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <quadlods.h>
 #include <map>
 #include <algorithm>
 #include "order.h"
@@ -36,16 +35,20 @@ void init(int n)
   twon=(uint64_t)1<<n;
 }
 
-string gen()
+vector<mpq_class> gen()
+{
+  return quad.gen();
+}
+
+string makeOrder(vector<mpq_class> elem)
 {
   uint64_t i,j,k,count=0;
   int64_t diff,lastdiff=1;
-  vector<mpq_class> elem,sums;
+  vector<mpq_class> sums;
   map<mpq_class,uint64_t> sorted;
   map<mpq_class,uint64_t>::iterator it;
   vector<uint32_t> seq;
   string ret;
-  elem=quad.gen();
   sort(elem.begin(),elem.end());
   sums.push_back(0);
   for (i=1,k=0;i<twon;i++)

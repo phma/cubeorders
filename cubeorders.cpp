@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     startThreads(nthreads);
     while (count)
     {
-      order=gen();
+      order=makeOrder(gen());
       histo[order]++;
       minbar++;
       if (histo[order]>MINCOUNT)
