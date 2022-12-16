@@ -25,19 +25,19 @@
 #include "order.h"
 using namespace std;
 
-Quadlods quad;
+Quadlods quadd;
 uint64_t twon;
 
 void init(int n)
 // n should be less than 31
 {
-  quad.init(n,0);
+  quadd.init(n,0);
   twon=(uint64_t)1<<n;
 }
 
 vector<mpq_class> gen()
 {
-  return quad.gen();
+  return quadd.gen();
 }
 
 string makeOrder(vector<mpq_class> elem)
