@@ -21,6 +21,7 @@
  */
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <quadlods.h>
 #include <boost/program_options.hpp>
@@ -50,6 +51,7 @@ int main(int argc, char *argv[])
   uint64_t minbar=0,maxbar=0;
   time_t now,then;
   ThreadAction ta;
+  ofstream orderFile,countedOrderFile;
   mpz_class totalOrders;
   bool validArgs,validCmd=true;
   int j,n=0;
@@ -118,8 +120,12 @@ int main(int argc, char *argv[])
       }
     }
     setThreadCommand(TH_STOP);
+    orderFile.open("orders");
+    countedOrderFile.open("counted orders");
     for (i=histo.begin();i!=histo.end();++i)
     {
+      orderFile<<i->first<<'\n';
+      countedOrderFile<<i->first<<' '<<i->second<<'\n';
       count+=i->second;
       if (i->second<minbar)
       {
