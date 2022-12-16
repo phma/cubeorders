@@ -117,7 +117,7 @@ bool actionQueueEmpty()
 
 bool actionQueueFull()
 {
-  return actQueue.size()>=threadStatus.size();
+  return actQueue.size()>=3*threadStatus.size();
 }
 
 ThreadAction dequeueResult()
