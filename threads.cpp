@@ -49,10 +49,6 @@ int currentAction;
 map<thread::id,int> threadNums;
 
 cr::steady_clock clk;
-const char statusNames[][8]=
-{
-  "None","Run","Pause","Wait","Stop"
-};
 
 double busyFraction()
 {
