@@ -4,4 +4,4 @@ Before 0.1.0 (first public release):
 
 Before 0.2.0:
 •Speed up execution with threads. ✓
-•Use random primes to generate the low-discrepancy sequence.
+•Use random primes to generate the low-discrepancy sequence. ✓
