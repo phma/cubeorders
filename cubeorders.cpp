@@ -28,6 +28,7 @@
 #include "config.h"
 #include "order.h"
 #include "threads.h"
+#include "random.h"
 #define MINCOUNT 10
 using namespace std;
 namespace po=boost::program_options;
@@ -42,6 +43,27 @@ bool ready(map<string,uint64_t> &histo)
   return ret;
 }
 
+vector<int> randomPrimes(int n)
+// Returns n different primes less than 65536. Do not pass n>6542; it will hang.
+{
+  vector<int> ret;
+  int i,p;
+  while (ret.size()<n)
+  {
+    p=rng.usrandom();
+    if (p>QL_MAX_DIMS)
+      p=-1;
+    else
+      p=quadlods::nthprime(p);
+    for (i=0;p>0 && i<ret.size();i++)
+      if (p==ret[i])
+	p=-1;
+    if (p>0)
+      ret.push_back(p);
+  }
+  return ret;
+}
+
 int main(int argc, char *argv[])
 {
   map<string,uint64_t>::iterator i;
@@ -51,6 +73,7 @@ int main(int argc, char *argv[])
   uint64_t minbar=0,maxbar=0;
   time_t now,then;
   ThreadAction ta;
+  vector<int> primes;
   ofstream orderFile,countedOrderFile;
   mpz_class totalOrders;
   bool validArgs,validCmd=true;
@@ -78,10 +101,15 @@ int main(int argc, char *argv[])
   }
   if (validArgs && validCmd)
   {
-    init(n);
     cout<<"Cubeorders version "<<VERSION<<" © "<<COPY_YEAR<<" Pierre Abbat\n"<<
       "Distributed under GPL v3 or later.\n"<<
       "This is free software with no warranty.\n";
+    primes=randomPrimes(n);
+    init(primes);
+    cout<<"Using primes ";
+    for (j=0;j<n;j++)
+      cout<<(j?",":"")<<primes[j];
+    cout<<endl;
     nthreads=thread::hardware_concurrency();
     startThreads(nthreads);
     while (count || busyFraction() || !resultQueueEmpty())
@@ -90,6 +118,12 @@ int main(int argc, char *argv[])
       {
 	ta.opcode=ACT_SUBSUM;
 	ta.tuple=gen();
+	if (histo.size()<0)
+	{
+	  for (j=0;j<n;j++)
+	    cout<<ta.tuple[j]<<' ';
+	  cout<<endl;
+	}
 	enqueueAction(ta);
       }
       if (!count)

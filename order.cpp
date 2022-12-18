@@ -35,6 +35,12 @@ void init(int n)
   twon=(uint64_t)1<<n;
 }
 
+void init(vector<int> primes)
+{
+  quadd.init(primes,0);
+  twon=(uint64_t)1<<primes.size();
+}
+
 vector<mpq_class> gen()
 {
   return quadd.gen();

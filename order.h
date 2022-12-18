@@ -25,5 +25,6 @@
 #include <string>
 
 void init(int n);
+void init(std::vector<int> primes);
 std::vector<mpq_class> gen();
 std::string makeOrder(std::vector<mpq_class> elem);
